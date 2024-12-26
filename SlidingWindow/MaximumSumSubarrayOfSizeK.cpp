@@ -1,3 +1,9 @@
+
+
+ /* Program with sliding window pattern */
+
+
+
 /*
 
     Maximum Sum Subarray of Size K
@@ -28,7 +34,7 @@ using namespace std;
 int main() {
 
 
-    /* Program with sliding window pattern */
+   
 
     //input
     vector<int> input {2, 1, 5, 1, 3, 2};
