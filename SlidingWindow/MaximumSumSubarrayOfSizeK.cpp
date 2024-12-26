@@ -2,8 +2,6 @@
 
  /* Program with sliding window pattern */
 
-
-
 /*
 
     Maximum Sum Subarray of Size K
@@ -22,10 +20,6 @@
     Explanation: Subarray with maximum sum is [3, 4].
 
 */
-
-
-
-
 
 #include <iostream>
 #include <vector>
