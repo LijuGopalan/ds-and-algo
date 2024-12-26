@@ -27,9 +27,6 @@ using namespace std;
 
 int main() {
 
-
-   
-
     //input
     vector<int> input {2, 1, 5, 1, 3, 2};
     int k = 3;
@@ -47,7 +44,7 @@ int main() {
         
         sum += input[end];
  
-        //loop until first k set of elements addition. 
+        //loop until first k set of elements added.
         if(end >= k-1) {
 
             result = max(sum, result);
