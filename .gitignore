@@ -1,0 +1,9 @@
+# Ignore everything
+*
+
+# Do not ignore .cpp files
+!*.cpp
+
+# Optionally, you may also want to include directories
+# to ensure they are not ignored.
+!*/
