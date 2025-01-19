@@ -1,6 +1,9 @@
 /*
 
 
+  Program with sliding window pattern 
+ -------------------------------------
+
 Longest Substring with K Distinct Characters (medium)
 
 Problem Statement #
