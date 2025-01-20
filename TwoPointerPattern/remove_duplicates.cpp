@@ -25,55 +25,57 @@ Explanation: The first two elements after removing the duplicates will be [2, 11
 using namespace std;
 
 int remove_duplicates(vector<int>& v) {
-
-    int result = 0;
-    if(v.size() < 1) {
+ 
+    int size = v.size();
+    if(size < 1) {
         return 0;
     }
 
-    // two pointer approach to parse the array. 
-    // use the 2 pointers at the beginning because the array is sorted and our intention is to remove similiar elements. 
-    // in case a find pair problem we can use pointers at start and beginning together. here its recommended to proceed with start itself. 
-
+    //logic
+    // 2 pointer approach
+    // compare next 2 elements in a parse. 
+    // start and end side by side . increment if start less than end . 
+    // in case start >= end, ensure start stays and increment until end find the next qualified element.
     int start = 0;
-    int end = start+1;
-    int size = v.size();
-    bool duplicatefound = false;
+    int end = 1;
 
-    while (end <= size)
+    while (end < size)
     {
-       if(v[start] != v[end]) {
+        if(v[start] < v[end]) {
+            start++;
 
-        if(duplicatefound) {
-            v[++start] = v[end];
-            duplicatefound = false;
-        }
+            // replace only if end is far from start due to any duplicate in between
+            if(end-start > 1) {
+                v[start] = v[end];
+            }
 
-        start++;end++;
+        } 
+        
+        end++;
+    }
 
-       } else {
-
-            duplicatefound = true;
-            end++;
-
-       }
-
+    cout << " \n New Array " << endl;
+    for(int x: v) {
+        cout << x << " ";
     }
     
-    result = start;
-
-
-
-    return result;
+    return (start+1);
+     
 }
 
 int main() {
 
     vector<int> input {2, 3, 3, 3, 6, 9, 9};
+    int result = remove_duplicates(input);
 
-    cout << "\n Result : " << remove_duplicates(input) << endl;
+    input.clear();
+    input = {2, 2, 2, 11};
+    result = remove_duplicates(input);
 
 
+    cout << "\n Result : " << result << endl;
+
+   
  
 }
 
