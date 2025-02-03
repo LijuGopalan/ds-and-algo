@@ -21,8 +21,31 @@ Explanation: There are two unique triplets whose sum is equal to zero.
 #include <vector>
 #include <array>
 #include <algorithm>
+#include <unordered_set>
 
 using namespace std;
+
+vector<array<int,3>> searchtripleteswthset(vector<int> arr) {
+  vector<array<int,3>> triplets;
+  sort(arr.begin(), arr.end());
+  for (int i = 0; i < arr.size(); i++) {
+    if (i > 0 && arr[i] == arr[i - 1]) {
+      continue;
+    }
+    unordered_set<int> seen;
+    for (int j = i + 1; j < arr.size(); j++) {
+      int target = -arr[i] - arr[j];
+      if (seen.find(target) != seen.end()) {
+        triplets.push_back({arr[i], arr[j], target});
+        while (j + 1 < arr.size() && arr[j] == arr[j + 1]) {
+          j++;
+        }
+      }
+      seen.insert(arr[j]);
+    }
+  }
+  return triplets;
+}
 
 vector<array<int,3>> searchTriplets(vector<int> arr) {
   vector<array<int,3>> triplets;
