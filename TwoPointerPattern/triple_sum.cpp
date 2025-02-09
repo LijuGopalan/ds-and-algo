@@ -23,8 +23,8 @@ Explanation: There are two unique triplets whose sum is equal to zero.
 #include <vector>
 #include <array>
 #include <map>
-#include <map>
-
+#include <unordered_map>
+ 
 using namespace std;
 
 void sort_array_and_store_in_map(vector<int>& a, multimap<int,bool>& m) {
