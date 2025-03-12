@@ -24,43 +24,30 @@ Explanation: The first two elements after removing the duplicates will be [2, 11
 
 using namespace std;
 
+void printarray(vector<int>& v) {
+    for(auto i : v) {
+        cout << i << " ";
+    }
+    cout << endl;
+}
+
 int remove_duplicates(vector<int>& v) {
  
+    //2, 3, 3, 3, 6, 9, 9
+
     int size = v.size();
-    if(size < 1) {
-        return 0;
-    }
+    if(size == 0) return 0;
 
-    //logic
-    // 2 pointer approach
-    // compare next 2 elements in a parse. 
-    // start and end side by side . increment if start less than end . 
-    // in case start >= end, ensure start stays and increment until end find the next qualified element.
-    int start = 0;
+    int i =  1;
     int end = 1;
-
-    while (end < size)
-    {
-        if(v[start] < v[end]) {
-            start++;
-
-            // replace only if end is far from start due to any duplicate in between
-            if(end-start > 1) {
-                v[start] = v[end];
-            }
-
-        } 
-        
-        end++;
+    for(;end<size;end++) {
+        if(v[end] != v[end-1]) {
+            v[i] = v[end];
+            i++;
+        }
     }
 
-    cout << " \n New Array " << endl;
-    for(int x: v) {
-        cout << x << " ";
-    }
-    
-    return (start+1);
-     
+    return i;
 }
 
 int main() {
@@ -68,14 +55,15 @@ int main() {
     vector<int> input {2, 3, 3, 3, 6, 9, 9};
     int result = remove_duplicates(input);
 
+    cout << "\n Result : " << result << endl;
+    printarray(input);
+
     input.clear();
     input = {2, 2, 2, 11};
     result = remove_duplicates(input);
 
-
     cout << "\n Result : " << result << endl;
-
-   
+    printarray(input);
  
 }
 
