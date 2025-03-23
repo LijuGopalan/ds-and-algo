@@ -1,18 +1,19 @@
-
 #include <iostream>
 #include <cuda_runtime.h>
 
-__global__ void helloFromGPU() {
-    printf("Hello World from GPU!\n");
+// Kernel function to print "Hello, World!" from the GPU
+__global__ void helloWorldKernel() {
+    printf("Hello, World from GPU!\n");
 }
 
 int main() {
-    // Launch kernel
-    helloFromGPU<<<1, 10>>>();
-    
-    // Wait for GPU to finish before accessing on host
+    // Launch the kernel with a single thread
+    helloWorldKernel<<<1, 1>>>();
+
+    // Wait for the GPU to finish before accessing the results
     cudaDeviceSynchronize();
-    
-    std::cout << "Hello World from CPU!" << std::endl;
+
+    std::cout << "Hello, World from CPU!" << std::endl;
+
     return 0;
 }
