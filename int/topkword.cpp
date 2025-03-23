@@ -30,16 +30,36 @@ Follow-up: Could you solve it in O(n log(k)) time and O(n) extra space?
 
 #include <iostream>
 #include <vector>
+
 #include <map>
 #include <string>
 #include <queue>
 using namespace std;
 
+#define ptype pair<int, string>
+
+class CustomComparator {
+
+    public :
+        bool operator()(ptype& a, ptype& b) {
+
+            //check if both string have same size, then lexicographical preceeds
+            
+            if(a.first == b.first) {
+                return a.second < b.second;
+            }
+
+            //descenting order // max heap
+            return a.first < b.first;
+
+        }
+};
+
 int main() {
 
-    vector<string> words = {"i","love","leetcode","i","love","coding"};
-    int k = 2;
-    vector<string> result;
+    vector<string> words = {"the","day","is","sunny","the","the","the","sunny","is","is","day"};
+    int k = 4;
+    vector<string> result(k);
 
     map<string,int> m;
 
@@ -49,7 +69,7 @@ int main() {
     }
 
     //create a priority queue to store the frequency of the words
-    priority_queue<pair<int,string>> pq; // max heap
+    priority_queue<ptype, vector<ptype>, CustomComparator> pq; // max heap
 
     //store the frequency of the words in the priority queue
     for(auto it : m) {
@@ -57,19 +77,22 @@ int main() {
 
         //if the size of the priority queue is greater than k, pop the top element
         if(pq.size() > k) {
-            pq.pop();
+           pq.pop();
         }
     }
 
     //store the top k frequent words in the result vector
     while(!pq.empty()) {
+
+        cout << endl << " test " << pq.top().second << endl;
+
         result.push_back(pq.top().second);
         pq.pop();
     }
 
     //print the result
     for(string t : result) {
-        cout << t << " ";
+        cout << t << "  ";
     }
 
     return 1;
