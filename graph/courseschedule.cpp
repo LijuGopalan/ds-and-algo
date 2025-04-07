@@ -33,11 +33,17 @@ using namespace std;
 /*
 
 Algorithm Overview
-Build a directed graph where each course points to its prerequisites.
-Use DFS (Depth-First Search) to detect cycles.
-If a cycle is detected, it is impossible to complete all courses → return False.
-If no cycle is found, all courses can be taken → return True.
 
+Undirected Graph Representation: ( cyle logic in undeirected graph is different from directed graph )
+undirected graph cycle is detected when a node is visited again and it is not the parent of the current node. ( here  we are not using parent node logic)
+
+1. Create a directed graph using an adjacency list to represent the courses and their prerequisites.
+2. For each course, check if it has any prerequisites.
+3. Use a depth-first search (DFS) to traverse the graph and check for cycles.
+4. If a cycle is detected, return false (it is impossible to finish all courses).   
+
+
+ 
 */
 
 
