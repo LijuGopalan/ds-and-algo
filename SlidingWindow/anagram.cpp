@@ -98,7 +98,7 @@ vector<int> findAnagrams(string s, string p) {
 
 int main () {
 
-    string s = "cbaebabacd", p = "abc";
+    string s = "abab", p = "ab";
 
     vector<int> r = findAnagrams(s,p);
 

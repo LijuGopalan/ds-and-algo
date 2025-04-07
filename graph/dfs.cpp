@@ -35,7 +35,9 @@ void printgraph(vector<vector<int>>& g) {
 
 void recursivedfs(vector<vector<int>>& g, int vertex, set<int>& visited) {
 
-  if(visited.find(vertex) == visited.end()) {
+  if(visited.find(vertex) != visited.end()) {
+    return;
+  }
 
     visited.insert(vertex);
     cout << endl <<  "visited " << vertex ;
@@ -46,11 +48,9 @@ void recursivedfs(vector<vector<int>>& g, int vertex, set<int>& visited) {
         // If not, recursively call DFS on the adjacent vertex
         recursivedfs(g,v,visited); 
       }
-    }
+    } 
 
-    return;
-
-  }
+  
 }
 
 
@@ -82,8 +82,6 @@ void dfsusingstack(vector<vector<int>>& g) {
     }
     
   }
-
-
 
 }
 

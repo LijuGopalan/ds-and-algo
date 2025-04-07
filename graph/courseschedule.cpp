@@ -22,88 +22,59 @@ To take course 1 you should have finished course 0, and to take course 0 you sho
 
 */
 
-#include <iostream>
-#include <vector>
-using namespace std;
-#include <map>        
-#include <set>
-#include <queue>     
-
-
-/*
-
-Algorithm Overview
-
-Undirected Graph Representation: ( cyle logic in undeirected graph is different from directed graph )
-undirected graph cycle is detected when a node is visited again and it is not the parent of the current node. ( here  we are not using parent node logic)
-
-1. Create a directed graph using an adjacency list to represent the courses and their prerequisites.
-2. For each course, check if it has any prerequisites.
-3. Use a depth-first search (DFS) to traverse the graph and check for cycles.
-4. If a cycle is detected, return false (it is impossible to finish all courses).   
-
-
  
-*/
-
-
-
-// Function to perform DFS and check for cycles
-// in the directed graph represented by the prerequisites
-// using a map to store the adjacency list
-// and a set to keep track of visited nodes
-// The function returns true if a cycle is detected, false otherwise
-// The function uses recursion to traverse the graph
-// and checks if a node is already visited before visiting it again
-bool dfs(map<int,vector<int>>& m, set<int>& visited, int vertex) {
-
-    if(visited.find(vertex) == visited.end()) {
-
-        visited.insert(vertex);
-        for(int t : m[vertex]) {
-            return dfs(m,visited,t);
-        }
-
-
-    } else {
-        return false;
-    }
-
-    return true;
-
-
-}
-
-// Function to check if all courses can be finished
-// by performing a DFS on the directed graph represented by the prerequisites  
-bool canFinish(int numCourses, vector<vector<int>>& prerequisites) {
     
-    if(prerequisites.size() < 1 || numCourses < 1) {
+    bool iscycle(vector<vector<int>>& g, vector<bool>& v, vector<bool>& loop, int vertex) {
+    
+      if(loop[vertex]) {
         return true;
+      }
+    
+      v[vertex] = true;
+      loop[vertex] = true;
+    
+      for(int ver : g[vertex] ) {
+    
+          if(loop[ver]) {
+            return true;
+          } else if(!v[ver] && iscycle(g,v,loop,ver)) {
+            return true;
+          }
+    
+      }
+    
+      loop[vertex] = false;
+      return false;
     }
-
-    map<int,vector<int>> m;
-
-    //create a map with prerequisites
-    for(vector<int> pre : prerequisites) { 
-        m[pre[0]].push_back(pre[1]); 
+    
+    bool canFinish(int numCourses, vector<vector<int>>& prerequisites) {
+    
+      if(numCourses < 1 || prerequisites.size() < 1 )
+        return false;
+    
+      //create a graph. 
+      vector<vector<int>> g(numCourses); 
+      for (vector<int> t : prerequisites) {
+        g[t[0]].push_back(t[1]);
+      }
+    
+      vector<bool> visited;
+      vector<bool> dfsloop;
+    
+      for(int i=0;i<numCourses; i++) {
+    
+        if(!visited[i] && !iscycle(g,visited,dfsloop,i)) { 
+          return false;
+        }
+    
+      }
+    
+      return true;
+    
+     
     }
-
-    set<int> v;
-
-    numCourses--;
-    //check if the graph is cyclic using DFS
-    //if it is cyclic, return false 
-    while(numCourses >= 0) { 
-        return dfs(m,v,numCourses--); 
-    }
-
-    return false;
-
-
-}
-
- 
+    
+  
 int main() {
     int numCourses = 4;
     vector<vector<int>> prerequisites = {{1, 0}, {2, 0}, {3, 1}, {3, 2}};
