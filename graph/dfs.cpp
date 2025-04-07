@@ -41,7 +41,11 @@ void recursivedfs(vector<vector<int>>& g, int vertex, set<int>& visited) {
     cout << endl <<  "visited " << vertex ;
 
     for(int v : g[vertex]) {
-      recursivedfs(g,v,visited); 
+      // Check if the vertex is already visited
+      if(visited.find(v) == visited.end()) {
+        // If not, recursively call DFS on the adjacent vertex
+        recursivedfs(g,v,visited); 
+      }
     }
 
     return;
