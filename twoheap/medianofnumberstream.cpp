@@ -1,4 +1,15 @@
 /*
+
+The median is the middle value in a sorted list of numbers.
+If the list has an even number of elements, the median is the average of the two middle numbers.
+If the list has an odd number of elements, the median is the middle number.
+
+Sorted makes indertion difficult, unless we use a proper data structure to keep the numbers. 
+Storing the number in an array and sorting it every time we need to find the median is not efficient.
+We can use a heap data structure to keep the numbers in sorted order.
+
+
+
 Problem Statement #
 Design a class to calculate the median of a number stream. The class should have the following two methods:
 
