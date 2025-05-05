@@ -39,6 +39,8 @@ using namespace std;
 */
 
 //complexity 2^N
+//brute force approach
+//we are using recursion to solve the problem
 int getsubsetwithmaxprofits(vector<int>& weight, vector<int>& profit, int capacity, int index) {
 
     if(index >= (int)weight.size() || capacity < 1) {
@@ -55,8 +57,12 @@ int getsubsetwithmaxprofits(vector<int>& weight, vector<int>& profit, int capaci
 
 }
 
-//
-int getsubsetwithmaxprofits_dynamicprogramming(vector<int>& weight, vector<int>& profit, int capacity, int index, map<pair<int,int>,int>& store) {
+//complexity O(N*W) where N is the number of items and W is the capacity of the knapsack
+//using memoization
+//we are using a map to store the results of subproblems to avoid recomputation
+//dynamic programming is a method for solving complex problems by breaking them down into simpler subproblems and storing the results of subproblems to avoid recomputation.
+//it is a bottom-up approach to solving problems
+int getsubsetwithmaxprofits_dynamicprogramming_bottomup(vector<int>& weight, vector<int>& profit, int capacity, int index, map<pair<int,int>,int>& store) {
 
     if(index >= (int)weight.size() || capacity < 1) {
       return 0;
@@ -92,7 +98,7 @@ int main() {
  
   map<pair<int,int>,int> store;
 
-  cout << " the max profit from the above combination is " << getsubsetwithmaxprofits_dynamicprogramming(weights, profits, capacity, 0, store);
+  cout << " the max profit from the above combination is " << getsubsetwithmaxprofits_dynamicprogramming_bottomup(weights, profits, capacity, 0, store);
 
  return 1;
 }
