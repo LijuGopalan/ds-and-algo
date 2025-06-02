@@ -25,7 +25,10 @@ int n_fibonacii_dynamic_topdown_withmemory(int n, vector<int>& v) {
 
 }
 
-//
+// This is a bottom up approach to dynamic programming.
+// It is more efficient than the top down approach as it does not use recursion and stack space.
+// It uses a loop to calculate the fibonacci numbers from 0 to n.
+// It uses two variables to store the previous two fibonacci numbers and updates them in each iteration.
 int n_fibonacii_dynamic_bottomup(int n, int prev1, int prev2) {
 
   if(n == 0 || n == 1) {

@@ -25,35 +25,41 @@
 #include <vector>
 using namespace std;
 
+
+// Function to find the maximum sum of a subarray of size k
+// using the sliding window technique   
+// Time Complexity: O(n)
+// Space Complexity: O(1)
+int maxSumSubarrayOfSizeK(const vector<int>& input, int k) {
+    int n = input.size();
+    int sum = 0;
+    int result = 0;
+    int start = 0;
+
+    for(int end = 0; end < n; end++) {
+        sum += input[end];
+
+        // When we have added k elements, we can start calculating the maximum
+        if(end >= k - 1) {
+            result = max(sum, result);
+            sum -= input[start];
+            start++;
+        }
+    }
+
+    return result;
+}
+
+
+
 int main() {
 
     //input
     vector<int> input {2, 1, 5, 1, 3, 2};
     int k = 3;
 
-    // variable declaration
-    int n = input.size();
-    int sum = 0;
-    int result = 0;
-
-    // start pointer
-    int start = 0;
-
-    for(int end=0; end<n ; end++) {
-
-        
-        sum += input[end];
- 
-        //loop until first k set of elements added.
-        if(end >= k-1) {
-
-            result = max(sum, result);
-            sum -= input[start];
-            start++;
-            
-        }
-
-    }
+    // Function call to find the maximum sum of a subarray of size k
+    int result = maxSumSubarrayOfSizeK(input, k);
 
     cout << " result : " << result << endl;
 }
