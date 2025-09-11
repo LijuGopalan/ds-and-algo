@@ -1,106 +1,114 @@
 /*
+    Path Sum II
 
-Given a binary tree and a number ‘S’, find all paths from root-to-leaf such that the sum of all the node values of each path equals ‘S’.
+    Problem Statement:
+    Given a binary tree and a number ‘S’, find all paths from root-to-leaf
+    such that the sum of all the node values of each path equals ‘S’.
 
+    Example:
+    S = 22,
+                  5
+                 / \
+                4   8
+               /   / \
+              11  13  4
+             /  \    / \
+            7    2  5   1
 
+    Output:
+    [
+      [5, 4, 11, 2],
+      [5, 8, 4, 5]
+    ]
 */
 
-#include <cstddef>
 #include <iostream>
-#include <ostream>
 #include <vector>
-#include <algorithm>
 
-using namespace std;
+// Definition for a binary tree node.
+struct Node {
+    int val;
+    Node* left;
+    Node* right;
 
-class Node {
-
-public:
-
-  int val;
-  Node* left;
-  Node* right;
-
-    Node(int v, Node* x, Node* y) {
-      left =x;
-       right = y;
-      val = v;
-    }
-
+    Node(int x) : val(x), left(nullptr), right(nullptr) {}
 };
 
-
-// Function to find all paths from root to leaf with a given sum
-// and store them in the result vector
-// currentpath is used to store the current path being explored
-// sum is the remaining sum we need to find in the current path
-// result is a vector of vectors that will store all valid paths
-// The function uses depth-first search (DFS) to explore all paths in the tree
-// If a leaf node is reached and the sum matches, the current path is added to the result
-// After exploring a path, the function backtracks by popping the last element from currentpath
-// This allows the function to explore other paths without affecting the current path
-// The function handles both left and right children of the current node
-// It recursively calls itself for both left and right subtrees, reducing the sum by the value of the current node
-// The base case is when the current node is NULL, in which case the function simply returns
-// time complexity: O(N), where N is the number of nodes in the tree
-// space complexity: O(H), where H is the height of the tree due to recursion stack
-void getPaths(Node* root, vector<vector<int>>& result, vector<int> currentpath, int sum) {
-
-  if(root == NULL) {
-    return;
-  }
-
-  currentpath.push_back(root->val);
-
-  if(root->left == NULL && root->right == NULL && root->val == sum ) {
-    //currentpath.push_back(root->val);
-    result.push_back(currentpath);
-  } 
-  
-  else {
-
-    getPaths(root->left, result, currentpath, sum-root->val);
-    getPaths(root->right, result, currentpath, sum-root->val);
-
-  }
-
-  // Backtrack: remove the last element from currentpath
-  // This allows us to explore other paths without affecting the current path
-  currentpath.pop_back();
-  
-}
-
-
-int main() {
-
-  vector<vector<int>> result;
-
-  
-    int sum = 6;
-
-    Node* node5 = new Node(5,NULL,NULL);
-
-    Node* node3 = new Node(3,NULL,NULL);
-    Node* node2 = new Node(2,node3,NULL);
-    Node* node1 = new Node(1,node2,node5);
- 
-
-    getPaths(node1, result, vector<int>(),sum);
-
-    cout << endl << " result " << endl;
-    for(vector<int> v : result) {
-
-      cout << " Path : ";
-      for(int i: v)
-        cout << i << " -> ";
+void findPathsRecursive(Node* currentNode, int requiredSum, std::vector<int>& currentPath, std::vector<std::vector<int>>& allPaths) {
+    if (!currentNode) {
+        return;
     }
 
+    // Add the current node to the path
+    currentPath.push_back(currentNode->val);
 
+    // Check if it's a leaf node and the sum matches
+    if (currentNode->left == nullptr && currentNode->right == nullptr && currentNode->val == requiredSum) {
+        allPaths.push_back(currentPath);
+    } else {
+        // Recurse for left and right children
+        findPathsRecursive(currentNode->left, requiredSum - currentNode->val, currentPath, allPaths);
+        findPathsRecursive(currentNode->right, requiredSum - currentNode->val, currentPath, allPaths);
+    }
+
+    // Backtrack: remove the current node from the path to explore other branches
+    currentPath.pop_back();
+}
+
+/**
+ * @brief Finds all root-to-leaf paths in a binary tree that sum up to a given value.
+ *
+ * This function serves as a wrapper to initialize the recursive search for paths.
+ * It uses a helper function `findPathsRecursive` that performs a Depth-First Search (DFS)
+ * to explore all paths.
+ *
+ * @param root A pointer to the root of the binary tree.
+ * @param sum The target sum for the paths.
+ * @return A vector of vectors, where each inner vector represents a root-to-leaf path
+ *         that sums to the target value.
+ */
+std::vector<std::vector<int>> findPaths(Node* root, int sum) {
+    std::vector<std::vector<int>> allPaths;
+    std::vector<int> currentPath;
+    findPathsRecursive(root, sum, currentPath, allPaths);
+    return allPaths;
+}
+
+/**
+ * @brief Prints the found paths.
+ * @param allPaths A vector of vectors representing the paths.
+ */
+void printResult(const std::vector<std::vector<int>>& allPaths) {
+    for (const auto& path : allPaths) {
+        std::cout << "[ ";
+        for (int num : path) {
+            std::cout << num << " ";
+        }
+        std::cout << "]" << std::endl;
+    }
+}
+
+/**
+ * @brief Main function to test the findPaths function.
+ * @return 0 on successful execution.
+ */
+int main() {
+    Node* root = new Node(5);
+    root->left = new Node(4);
+    root->right = new Node(8);
+    root->left->left = new Node(11);
+    root->left->left->left = new Node(7);
+    root->left->left->right = new Node(2);
+    root->right->left = new Node(13);
+    root->right->right = new Node(4);
+    root->right->right->left = new Node(5);
+    root->right->right->right = new Node(1);
+
+    int sum = 22;
+    std::cout << "Finding paths with sum " << sum << "..." << std::endl;
+    std::vector<std::vector<int>> result = findPaths(root, sum);
+    printResult(result);
+
+    // Note: In a real application, you would need to deallocate the tree nodes.
     return 0;
-  
-
-
-
-
-  return 1;
 }

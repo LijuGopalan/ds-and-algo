@@ -57,6 +57,12 @@ Approach:
 #include <iostream>
 #include <unordered_set>
 
+/**
+ * @brief Calculates the sum of the squares of the digits of a number.
+ * This is the helper function for the happy number problem.
+ * @param n The input integer.
+ * @return The sum of the squares of the digits of n.
+ */
 int getNext(int n) {
     int totalSum = 0;
     while (n > 0) {
@@ -67,6 +73,13 @@ int getNext(int n) {
     return totalSum;
 }
 
+/**
+ * @brief Determines if a number is a "happy number" using the fast and slow pointer technique.
+ * A happy number is a number that eventually reaches 1 when replaced by the sum of the square of its digits.
+ * This method detects cycles to determine if the process will loop endlessly.
+ * @param n The input integer to check.
+ * @return True if n is a happy number, false otherwise.
+ */
 bool isHappy(int n) {
     int slow = n;
     int fast = getNext(n);
@@ -77,6 +90,13 @@ bool isHappy(int n) {
     return fast == 1;
 }
 
+/**
+ * @brief Determines if a number is a "happy number" using a hash set.
+ * This method keeps track of numbers seen during the process. If a number is encountered again,
+ * it indicates a cycle, and the number is not happy.
+ * @param n The input integer to check.
+ * @return True if n is a happy number, false otherwise.
+ */
 bool isHappyUsingsSet(int n) {
     std::unordered_set<int> seenNumbers;
     while (n != 1 && seenNumbers.find(n) == seenNumbers.end()) {
@@ -86,6 +106,11 @@ bool isHappyUsingsSet(int n) {
     return n == 1;
 }
 
+/**
+ * @brief Main function to test the isHappy function.
+ * Prompts the user to enter a number and prints whether it is a happy number.
+ * @return 0 on successful execution.
+ */
 int main() {
     int number;
     std::cout << "Enter a number: ";

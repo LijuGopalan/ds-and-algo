@@ -1,94 +1,119 @@
 
-#include <iostream> 
+/*
+    Binary Tree Level Order Traversal II (Bottom-up)
+
+    Problem Statement:
+    Given a binary tree, return the bottom-up level order traversal of its nodes' values.
+    (i.e., from left to right, level by level from leaf to root).
+
+    Example:
+    Given binary tree [3,9,20,null,null,15,7],
+        3
+       / \
+      9  20
+        /  \
+       15   7
+    return its bottom-up level order traversal as:
+    [
+      [15,7],
+      [9,20],
+      [3]
+    ]
+*/
+
+#include <iostream>
 #include <vector>
 #include <queue>
 #include <deque>
-using namespace std;
+#include <algorithm> // For std::reverse if needed, though deque is used here
 
-class Node {
+// Definition for a binary tree node.
+struct Node {
+    int val;
+    Node* left;
+    Node* right;
 
-    public:
-      int val;
-      Node *left;
-      Node * right;
-    
-      Node(int v, Node* l, Node* r) {
-    
-        val = v;
-        left = l;
-        right = r;
-    
-      }
-    
+    Node(int x) : val(x), left(nullptr), right(nullptr) {}
 };
-    
-deque<vector<int>> levelordertraverse_bottom_to_top(Node* root) {
 
-    if(root == NULL) {
-    return {{}};
+/**
+ * @brief Performs a bottom-up level order traversal of a binary tree.
+ *
+ * This function traverses the tree level by level using Breadth-First Search (BFS).
+ * The node values for each level are stored in a temporary vector. This vector is then
+ * pushed to the front of a deque, which efficiently reverses the order of the levels.
+ *
+ * @param root A pointer to the root of the binary tree.
+ * @return A deque of vectors, where each inner vector contains the node values of a level,
+ *         ordered from the leaf level to the root level.
+ */
+std::deque<std::vector<int>> levelOrderBottom(Node* root) {
+    std::deque<std::vector<int>> result;
+    if (!root) {
+        return result;
     }
 
-    queue<Node*> q;
+    std::queue<Node*> q;
     q.push(root);
 
-    deque<vector<int>> dq;
     while (!q.empty()) {
+        int levelSize = q.size();
+        std::vector<int> currentLevel;
+        currentLevel.reserve(levelSize);
 
-    int level = q.size();
-    vector<int> temp;
+        for (int i = 0; i < levelSize; ++i) {
+            Node* n = q.front();
+            q.pop();
+            currentLevel.push_back(n->val);
 
-    while(level > 0) {
-
-        Node* n = q.front();
-        q.pop();
-        
-        temp.push_back(n->val);
-    
-        if(n->left != NULL) 
-        q.push(n->left);
-
-        if(n->right != NULL)
-        q.push(n->right);
-        
-        level--;
-    }
-    dq.push_front(temp);
-
+            if (n->left) {
+                q.push(n->left);
+            }
+            if (n->right) {
+                q.push(n->right);
+            }
+        }
+        // Add the level at the beginning of the result deque
+        result.push_front(currentLevel);
     }
 
-    return dq;
+    return result;
 }
 
-int main() {
-
-    Node* node40 = new Node(40,NULL,NULL);
-    Node* node50 = new Node(50,NULL,NULL);
-
-
-    Node* node20 = new Node(20,NULL,NULL);
-    Node* node30 = new Node(30,NULL,NULL);
-
-    Node* node1 = new Node(15,node20,node30);
-    Node* node2 = new Node(7,node40,node50);
-
-    Node* node3 = new Node(20,node1,node2);
-
-    Node* node4 = new Node(9,NULL,NULL);
-    Node* node5 = new Node(3,node4,node3);
-
-    deque<vector<int>> r = levelordertraverse_bottom_to_top(node5);
-
-    cout << " level order BFS from Bottom to Top " << endl ;
-
-    for(vector<int> x : r ) {
-      
-      cout << endl;
-      for( int i: x) {
-        cout << i << " ";
-      }
-
+/**
+ * @brief Prints the result of the bottom-up traversal.
+ * @param result A deque of vectors representing the levels of the tree.
+ */
+void printResult(const std::deque<std::vector<int>>& result) {
+    std::cout << "[" << std::endl;
+    for (const auto& level : result) {
+        std::cout << "  [";
+        for (int i = 0; i < level.size(); ++i) {
+            std::cout << level[i] << (i == level.size() - 1 ? "" : ", ");
+        }
+        std::cout << "]" << std::endl;
     }
+    std::cout << "]" << std::endl;
+}
 
+/**
+ * @brief Main function to build a tree and test the levelOrderBottom function.
+ * @return 0 on successful execution.
+ */
+int main() {
+    // Creating a sample binary tree: [3,9,20,null,null,15,7]
+    Node* root = new Node(3);
+    root->left = new Node(9);
+    root->right = new Node(20);
+    root->right->left = new Node(15);
+    root->right->right = new Node(7);
+
+    std::cout << "Performing bottom-up level order traversal..." << std::endl;
+    std::deque<std::vector<int>> result = levelOrderBottom(root);
+
+    std::cout << "Result:" << std::endl;
+    printResult(result);
+
+    // Note: In a real application, you would need to delete the allocated nodes.
     return 0;
-  
 }

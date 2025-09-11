@@ -1,161 +1,79 @@
 /*
-Given a string s which represents an expression, evaluate this expression and return its value. 
+    Basic Calculator II
 
-The integer division should truncate toward zero.
+    Problem Statement:
+    Given a string `s` which represents an expression, evaluate this expression and
+    return its value. The integer division should truncate toward zero. The expression
+    contains only non-negative integers, '+', '-', '*', '/' operators, and empty spaces.
 
-You may assume that the given expression is always valid. All intermediate results will be in the range of [-231, 231 - 1].
+    Example 1:
+    Input: s = "3+2*2"
+    Output: 7
 
-Note: You are not allowed to use any built-in function which evaluates strings as mathematical expressions, such as eval().
+    Example 2:
+    Input: s = " 3/2 "
+    Output: 1
 
-Example 1:
-Input: s = "3+2*2"
-Output: 7
+    Example 3:
+    Input: s = " 3+5 / 2 "
+    Output: 5
 
-Example 2:
-Input: s = " 3/2 "
-Output: 1
-
-Example 3:
-Input: s = " 3/5 / 2 "
-Output: 5
- 
-Constraints:
-
-1 <= s.length <= 3 * 105
-s consists of integers and operators ('+', '-', '*', '/') separated by some number of spaces.
-s represents a valid expression.
-All the integers in the expression are non-negative integers in the range [0, 231 - 1].
-The answer is guaranteed to fit in a 32-bit integer.
-
+    Algorithm Description:
+    This solution evaluates the expression in a single pass using a stack.
+    1. Iterate through the string, parsing the current number (`currentNumber`).
+    2. Keep track of the last seen operator (`lastOperator`), initialized to '+'.
+    3. When we encounter a new operator (or reach the end of the string), we evaluate
+       the `currentNumber` based on the `lastOperator`:
+       - If `+`, push `currentNumber` onto the stack.
+       - If `-`, push `-currentNumber` onto the stack.
+       - If `*`, pop the top of the stack, multiply it by `currentNumber`, and push the result back.
+       - If `/`, pop the top of the stack, divide it by `currentNumber`, and push the result back.
+    4. After the loop, the stack contains only the terms to be added. Summing up all
+       the numbers in the stack gives the final result. This approach correctly handles
+       operator precedence because `*` and `/` are evaluated immediately, while `+` and `-`
+       are deferred until the final summation.
 */
 
 #include <iostream>
-#include <stack>
-using namespace std;
-
-// 3+2*2
-
-// operator  +,*
-//operand    3 2 2
-
-int mathaction(int x, int y, char oper) {
-
-  switch (oper) {
-  
-    case '+' :
-      return x+y;
-      break;
-
-    case '-' :
-      return x-y;
-      break;
-
-    case '*' :
-      return x*y;
-      break;
-
-    case '/' :
-      return x/y;
-      break;
-
-    default:
-      return 0;
-      break;
-
-  }
-
-}
-
-
-int calculate(string s) {
-
-stack<char> oper;
-stack<int> operands;
-
-for(char c : s) {
-
-  if(c >= '0' and c <='9') {
-    operands.push(c*1-'0');
-  } else {
-    
-    switch (c) {
-    
-      case '+' : 
-      case '-' : 
-      case '*' : 
-      case '/' :
-          oper.push(c);
-          break;
-    }
-  }
-}
- 
-
-int totalsum = 0;
-while (!oper.empty()) {
-
-  char op = oper.top();
-  if(totalsum == 0) {
-
-    int int1 = operands.top();operands.pop();
-    int int2 = operands.top();operands.pop();
-
-    totalsum = totalsum + mathaction(int2,int1,op); 
-  } else {
- 
-    int int2 = operands.top();operands.pop();
-    totalsum = mathaction(int2,totalsum,op); 
-
-  }
-  oper.pop();
-
-}
-
-return totalsum;
-
-}
-
-// To execute C++, please define "int main()"
-int main() {
-  cout << " calculcat " << calculate("3+2*2");
-}
-
-
-/*
-
-
-
-#include <iostream>
-#include <stack>
 #include <string>
-#include <cctype>
+#include <vector>
+#include <stack>
+#include <cctype> // For isdigit and isspace
 
-int calculate(const std::string &s) {
+/**
+ * @brief Evaluates a string expression with +,-,*,/ operators.
+ *
+ * @param s The input string expression.
+ * @return The integer result of the evaluation.
+ */
+int calculate(const std::string& s) {
     std::stack<int> operands;
-    std::stack<char> operators;
-    int num = 0;
-    char prevOp = '+';
+    long currentNumber = 0;
+    char lastOperator = '+';
 
     for (size_t i = 0; i < s.length(); ++i) {
-        if (std::isdigit(s[i])) {
-            num = num * 10 + (s[i] - '0');
+        char currentChar = s[i];
+        if (std::isdigit(currentChar)) {
+            currentNumber = currentNumber * 10 + (currentChar - '0');
         }
-        if (!std::isdigit(s[i]) && !std::isspace(s[i]) || i == s.length() - 1) {
-            if (prevOp == '+') {
-                operands.push(num);
-            } else if (prevOp == '-') {
-                operands.push(-num);
-            } else if (prevOp == '*') {
+        // An operator is found, or we are at the end of the string
+        if (!std::isdigit(currentChar) && !std::isspace(currentChar) || i == s.length() - 1) {
+            if (lastOperator == '+') {
+                operands.push(currentNumber);
+            } else if (lastOperator == '-') {
+                operands.push(-currentNumber);
+            } else if (lastOperator == '*') {
                 int top = operands.top();
                 operands.pop();
-                operands.push(top * num);
-            } else if (prevOp == '/') {
+                operands.push(top * currentNumber);
+            } else if (lastOperator == '/') {
                 int top = operands.top();
                 operands.pop();
-                operands.push(top / num);
+                operands.push(top / currentNumber);
             }
-            prevOp = s[i];
-            num = 0;
+            // Update the last operator and reset the current number
+            lastOperator = currentChar;
+            currentNumber = 0;
         }
     }
 
@@ -167,15 +85,22 @@ int calculate(const std::string &s) {
     return result;
 }
 
+/**
+ * @brief Main function to test the calculate function.
+ * @return 0 on successful execution.
+ */
 int main() {
-    std::string expression;
-    std::cout << "Enter a mathematical expression: ";
-    std::getline(std::cin, expression);
+    std::string s1 = "3+2*2";
+    std::cout << "Expression: \"" << s1 << "\", Result: " << calculate(s1) << " (Expected: 7)" << std::endl;
 
-    int result = calculate(expression);
-    std::cout << "Result: " << result << std::endl;
+    std::string s2 = " 3/2 ";
+    std::cout << "Expression: \"" << s2 << "\", Result: " << calculate(s2) << " (Expected: 1)" << std::endl;
+
+    std::string s3 = " 3+5 / 2 ";
+    std::cout << "Expression: \"" << s3 << "\", Result: " << calculate(s3) << " (Expected: 5)" << std::endl;
+
+    std::string s4 = "1-1+1";
+    std::cout << "Expression: \"" << s4 << "\", Result: " << calculate(s4) << " (Expected: 1)" << std::endl;
 
     return 0;
 }
-
-*/

@@ -30,84 +30,85 @@ s and p consist of lowercase English letters.
 */
 
 
-// Solution: Sliding window approach
-
 #include <iostream>
 #include <vector>
-#include <map>
-using namespace std;
+#include <string>
 
-bool findmatch(map<char,int>& m, string& p) {
-    
-    for(char c: p) {
-        if(m.find(c) == m.end()) {
-            return false;
+/**
+ * @brief Finds all starting indices of p's anagrams in s.
+ *
+ * This function uses a sliding window approach with frequency maps (represented by vectors)
+ * to efficiently find all occurrences of anagrams of string p within string s.
+ * An anagram is a word or phrase formed by rearranging the letters of a different word or phrase,
+ * typically using all the original letters exactly once.
+ *
+ * @param s The string to search within.
+ * @param p The pattern string for which to find anagrams.
+ * @return A vector of integers containing the starting indices of all found anagrams.
+ */
+std::vector<int> findAnagrams(const std::string& s, const std::string& p) {
+    if (s.length() < p.length()) {
+        return {};
+    }
+
+    std::vector<int> p_freq(26, 0);
+    std::vector<int> window_freq(26, 0);
+
+    // Populate frequency map for p and the initial window in s
+    for (int i = 0; i < p.length(); ++i) {
+        p_freq[p[i] - 'a']++;
+        window_freq[s[i] - 'a']++;
+    }
+
+    std::vector<int> result;
+    // Check if the initial window is an anagram
+    if (p_freq == window_freq) {
+        result.push_back(0);
+    }
+
+    // Slide the window across the rest of string s
+    for (int i = p.length(); i < s.length(); ++i) {
+        // Add the new character entering the window from the right
+        window_freq[s[i] - 'a']++;
+        // Remove the character that is leaving the window from the left
+        window_freq[s[i - p.length()] - 'a']--;
+
+        // Check if the current window's character frequencies match p's frequencies
+        if (p_freq == window_freq) {
+            // The starting index of this anagram window is (i - p.length() + 1)
+            result.push_back(i - p.length() + 1);
         }
     }
-    return true;
+
+    return result;
 }
 
-
-        
-vector<int> findAnagrams(string s, string p) {
-    
-    map<char,int> m;
-    int end = 0;
-    int start = 0;
-    vector<int> r;
-
-    char c;
-
-    for(;end<s.size();end++) {
-
-        c = s[end];
-        if(m.find(c) != m.end()) {
-          
-            m[c]++;
-        } else {
-
-           
-            m.insert({c,1});
-        } 
-
-        if(end < (p.size()-1)) {
-           continue;
-        }
-
-        if(findmatch(m,p)) {
-            r.push_back(start);
-        }
-
-        c = s[start];
-
-        if(m[c] > 1) {
-           
-            m[c]--;
-        } else {
-            
-            m.erase(c);
-        }
-
-        start++;
- 
-    } 
-
-    return r;
-    
-} 
-
-int main () {
-
-    string s = "abab", p = "ab";
-
-    vector<int> r = findAnagrams(s,p);
-
-    cout << "Result: ";
-
-    for(int i=0;i<r.size();i++) {
-        cout << " " << r[i] << " ";
+/**
+ * @brief Main function to test the findAnagrams function.
+ *
+ * Runs test cases from the problem description and prints the starting
+ * indices of found anagrams to the console.
+ *
+ * @return 0 on successful execution.
+ */
+int main() {
+    std::string s1 = "cbaebabacd", p1 = "abc";
+    std::vector<int> result1 = findAnagrams(s1, p1);
+    std::cout << "Anagrams of \"" << p1 << "\" in \"" << s1 << "\" found at indices: ";
+    for (int index : result1) {
+        std::cout << index << " ";
     }
- 
+    std::cout << std::endl; // Expected: 0 6
+
+    std::string s2 = "abab", p2 = "ab";
+    std::vector<int> result2 = findAnagrams(s2, p2);
+    std::cout << "Anagrams of \"" << p2 << "\" in \"" << s2 << "\" found at indices: ";
+    for (int index : result2) {
+        std::cout << index << " ";
+    }
+    std::cout << std::endl; // Expected: 0 1 2
+
+    return 0;
 }
 
  

@@ -16,68 +16,69 @@
 
 */
 
-#include<iostream>
-#include<vector>
-using namespace std;
+#include <iostream>
+#include <vector>
+#include <algorithm>
 
-int get_max_length_subarray_with_1(vector<int>& v, int& k) {
+/**
+ * @brief Finds the length of the longest contiguous subarray of 1s after replacing at most k zeros.
+ *
+ * This function uses a sliding window approach. The window is expanded by moving the `windowEnd`
+ * pointer. Inside the window, we count the number of ones (`maxOnesCount`). The number of zeros
+ * is then the window size minus the ones count. If the number of zeros exceeds k, the window
+ * is shrunk from the left by moving the `windowStart` pointer. The maximum window size encountered
+ * is tracked and returned as the result.
+ *
+ * @param arr A constant reference to the input vector of 0s and 1s.
+ * @param k The maximum number of zeros that can be replaced with ones.
+ * @return The length of the longest possible contiguous subarray of 1s.
+ */
+int findLength(const std::vector<int>& arr, int k) {
+    int windowStart = 0, maxLength = 0, maxOnesCount = 0;
 
-  
-    int result = 0;
-    int temp = k;
-
-    if(v.size() < 1 || k < 1) {
-        return result;
-    }
-
-    //Sliding window pattern use single pointer to keep track of start and end of the window.
-    int start = 0;
-
-    int begin = 0;
-
-    int size = v.size();
-
-    for(;start<size;start++) {
-        
-        if(v[start] == 0) {
-            
-            if(k == 0) {
-                
-                result  = max(result, start-begin+1);
-                 
-                if(v[begin] == 0 ) {
-                    k++;                   
-                }
-                begin++;
-
-            } else {
-                k--;
-            }
-                   
-            continue;
-             
+    // Iterate through the array to slide the window's end
+    for (int windowEnd = 0; windowEnd < arr.size(); ++windowEnd) {
+        if (arr[windowEnd] == 1) {
+            maxOnesCount++;
         }
-        
+
+        // The number of zeros in the current window is its size minus the count of ones.
+        // If this count is greater than k, we must shrink the window from the left.
+        if ((windowEnd - windowStart + 1 - maxOnesCount) > k) {
+            if (arr[windowStart] == 1) {
+                maxOnesCount--; // Decrement ones count if a 1 is sliding out of the window
+            }
+            windowStart++; // Shrink the window
+        }
+
+        // The current window size is a candidate for the max length
+        maxLength = std::max(maxLength, windowEnd - windowStart + 1);
     }
-      
-    return result ;
 
-
+    return maxLength;
 }
 
+/**
+ * @brief Main function to test the findLength function.
+ *
+ * Runs test cases from the problem description and prints the results to the console.
+ *
+ * @return 0 on successful execution.
+ */
 int main() {
+    // Example 1
+    std::vector<int> input1 = {0, 1, 1, 0, 0, 1, 1};
+    int k1 = 2;
+    std::cout << "Input: {0, 1, 1, 0, 0, 1, 1}, k=2" << std::endl;
+    std::cout << "Length of longest subarray with 1s: " << findLength(input1, k1) << std::endl; // Expected: 6
 
-    vector<int> input {0, 1, 1, 0, 0, 0, 1, 1, 0, 1, 1};
-    int k = 2;
+    std::cout << "--------------------" << std::endl;
 
-    cout << endl << "result : " << get_max_length_subarray_with_1(input,k); 
+    // Example 2
+    std::vector<int> input2 = {0, 1, 0, 0, 1, 1, 0, 1, 1, 0, 0, 1, 1};
+    int k2 = 3;
+    std::cout << "Input: {0, 1, 0, 0, 1, 1, 0, 1, 1, 0, 0, 1, 1}, k=3" << std::endl;
+    std::cout << "Length of longest subarray with 1s: " << findLength(input2, k2) << std::endl; // Expected: 9
 
-
-    input.clear();
-    input = { 0, 1, 0, 0, 1, 1, 0, 1, 1, 0, 0, 1, 1};
-    k = 3;
-    cout << endl << "result : " << get_max_length_subarray_with_1(input,k); 
-
-
-    return 1;
+    return 0;
 }

@@ -28,86 +28,85 @@ Explanation: The longest substrings with no more than '3' distinct characters ar
 */
 
 #include <iostream>
+#include <string>
 #include <unordered_map>
-#include <map>
+#include <algorithm>
 
-using namespace std;
-
-
-int get_length_of_distinct_string( string question, int length) 
-{
-
-    //follow sliding window approach ( 2 variables start,end begin together. end increments, while start stays unitl length )
-    //start increments when a match found to reset the match and look for another. 
-
-    int result = -1;
-
-    if(question.size()<=0 || length <=0 ) {
-        return result;
+/**
+ * @brief Finds the length of the longest substring with no more than K distinct characters.
+ *
+ * This function implements the sliding window pattern. It expands a window from the right
+ * and keeps track of the distinct characters within the window using a hash map.
+ * If the number of distinct characters exceeds K, the window is shrunk from the left
+ * until the condition is met again. The maximum window size seen during this process
+ * is recorded and returned.
+ *
+ * @param str The input string.
+ * @param k The maximum number of distinct characters allowed in the substring.
+ * @return The length of the longest substring with at most K distinct characters. Returns 0 if input is invalid.
+ */
+int findLongestSubstringLength(const std::string& str, int k) {
+    if (str.empty() || k <= 0) {
+        return 0;
     }
 
-    char temp;
-    int size = question.size();
-    int start = 0;
-    int end = 0;
+    int windowStart = 0;
+    int maxLength = 0;
+    std::unordered_map<char, int> charFrequencyMap;
 
-    // map is required for keep track of distinct characters
-    // cannot use set because characters repeat. so we need count of chracters to keep track of length.
-    // hence a map is advisible here for quick solution
-    unordered_map<char,int> m;
+    // Expand the window by adding one character at a time from the right
+    for (int windowEnd = 0; windowEnd < str.length(); ++windowEnd) {
+        char rightChar = str[windowEnd];
+        charFrequencyMap[rightChar]++;
 
-    while( end < size) {
-
-        temp = question[end];
-        //store the character to map
-        
-        if(m.find(temp) == m.end()) {
-            m.insert({temp,1}); 
-        } else {
-            m[temp]++;
+        // Shrink the window from the left if the number of distinct characters exceeds k
+        while (charFrequencyMap.size() > k) {
+            char leftChar = str[windowStart];
+            charFrequencyMap[leftChar]--;
+            if (charFrequencyMap[leftChar] == 0) {
+                charFrequencyMap.erase(leftChar);
+            }
+            windowStart++; // Contract the window
         }
 
-        //check whether we found distinct substring of size length
-        if(m.size() > length) {
-
-            result = max(end-start,result);
-
-            //we found the first qualified substring length.
-            //now increment start pointer to find an another substring from the next start position
-            // increment th start pointer until map size is reset to less than length.
-            while(m.size()>length) {
-                temp = question[start];
-                if(m[temp]>1) {
-                    m[temp]--;
-                } else {
-                    m.erase(temp);
-                }
-                start++;
-            }
-
-        } 
-
-        end++;
+        // Update the maximum length after every expansion
+        maxLength = std::max(maxLength, windowEnd - windowStart + 1);
     }
 
-    return result;
-
-    
+    return maxLength;
 }
 
-
+/**
+ * @brief Main function to test the findLongestSubstringLength function.
+ *
+ * Runs the examples from the problem description and prints their output to the console.
+ *
+ * @return 0 on successful execution.
+ */
 int main() {
+    std::string input1 = "araaci";
+    int k1 = 2;
+    std::cout << "Input: \"" << input1 << "\", K=" << k1 << std::endl;
+    std::cout << "Length of the longest substring: " << findLongestSubstringLength(input1, k1) << std::endl; // Expected: 4
+    std::cout << "--------------------" << std::endl;
 
-    string input = "araaci"; 
-    int k = 2;
-    cout << "\n  The longest substring with no more than " << k <<" distinct characters is : " << get_length_of_distinct_string(input,k);
-    
-    input = "araaci"; 
-    k = 1;
-    cout << "\n  The longest substring with no more than " << k <<" distinct characters is : " << get_length_of_distinct_string(input,k);
+    std::string input2 = "araaci";
+    int k2 = 1;
+    std::cout << "Input: \"" << input2 << "\", K=" << k2 << std::endl;
+    std::cout << "Length of the longest substring: " << findLongestSubstringLength(input2, k2) << std::endl; // Expected: 2
+    std::cout << "--------------------" << std::endl;
 
-    input = "cbbebi"; 
-    k = 3;
-    cout << "\n  The longest substring with no more than " << k <<" distinct characters is : " << get_length_of_distinct_string(input,k);
+    std::string input3 = "cbbebi";
+    int k3 = 3;
+    std::cout << "Input: \"" << input3 << "\", K=" << k3 << std::endl;
+    std::cout << "Length of the longest substring: " << findLongestSubstringLength(input3, k3) << std::endl; // Expected: 5
+    std::cout << "--------------------" << std::endl;
 
+    // Test case where the whole string is the answer
+    std::string input4 = "abc";
+    int k4 = 3;
+    std::cout << "Input: \"" << input4 << "\", K=" << k4 << std::endl;
+    std::cout << "Length of the longest substring: " << findLongestSubstringLength(input4, k4) << std::endl; // Expected: 3
+
+    return 0;
 }

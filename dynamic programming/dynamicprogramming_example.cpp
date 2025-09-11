@@ -1,64 +1,100 @@
+/*
+    Dynamic Programming: Fibonacci Number Example
+
+    This file demonstrates three different approaches to calculating the nth Fibonacci number,
+    illustrating the concepts of simple recursion, top-down dynamic programming (memoization),
+    and bottom-up dynamic programming (tabulation).
+
+    The Fibonacci sequence is defined as:
+    F(0) = 0, F(1) = 1
+    F(n) = F(n-1) + F(n-2) for n > 1.
+*/
+
 #include <iostream>
-#include <array>
 #include <vector>
-using namespace std;
 
-int n_fibonacii_dynamic_topdown(int n) {
-
-  if(n == 0 || n == 1) {
-    return n;
-  }
-
-  return n_fibonacii_dynamic_topdown(n-1) + n_fibonacii_dynamic_topdown(n-2); 
+/**
+ * @brief Calculates the nth Fibonacci number using simple recursion.
+ *
+ * This is a classic but inefficient approach. It has overlapping subproblems,
+ * leading to an exponential time complexity.
+ *
+ * @param n The index in the Fibonacci sequence.
+ * @return The nth Fibonacci number.
+ */
+int fibonacciRecursive(int n) {
+    if (n <= 1) {
+        return n;
+    }
+    return fibonacciRecursive(n - 1) + fibonacciRecursive(n - 2);
 }
 
-int n_fibonacii_dynamic_topdown_withmemory(int n, vector<int>& v) {
-
-  if(n == 0 || n == 1) {
-    return n;
-  }
-
-  if(v[n] == -1) {
-    v[n] = n_fibonacii_dynamic_topdown(n-1) + n_fibonacii_dynamic_topdown(n-2);
-  }
-  return v[n];
-
+/**
+ * @brief A helper for the top-down (memoization) approach.
+ *
+ * @param n The index in the Fibonacci sequence.
+ * @param memo A vector used for memoization.
+ * @return The nth Fibonacci number.
+ */
+int fibonacciTopDownHelper(int n, std::vector<int>& memo) {
+    if (n <= 1) {
+        return n;
+    }
+    // If the value has not been computed yet, compute and store it
+    if (memo[n] == -1) {
+        memo[n] = fibonacciTopDownHelper(n - 1, memo) + fibonacciTopDownHelper(n - 2, memo);
+    }
+    return memo[n];
 }
 
-// This is a bottom up approach to dynamic programming.
-// It is more efficient than the top down approach as it does not use recursion and stack space.
-// It uses a loop to calculate the fibonacci numbers from 0 to n.
-// It uses two variables to store the previous two fibonacci numbers and updates them in each iteration.
-int n_fibonacii_dynamic_bottomup(int n, int prev1, int prev2) {
+/**
+ * @brief Calculates the nth Fibonacci number using top-down DP (memoization).
+ *
+ * This approach uses recursion but stores the results of subproblems in a `memo`
+ * array to avoid re-computation.
+ *
+ * @param n The index in the Fibonacci sequence.
+ * @return The nth Fibonacci number.
+ */
+int fibonacciTopDown(int n) {
+    if (n < 0) return -1; // Or throw an exception
+    std::vector<int> memo(n + 1, -1);
+    return fibonacciTopDownHelper(n, memo);
+}
 
-  if(n == 0 || n == 1) {
-    return n;
-  }
+/**
+ * @brief Calculates the nth Fibonacci number using bottom-up DP (tabulation).
+ *
+ * This approach avoids recursion by building the solution iteratively from the base
+ * cases up to the desired value `n`.
+ *
+ * @param n The index in the Fibonacci sequence.
+ * @return The nth Fibonacci number.
+ */
+int fibonacciBottomUp(int n) {
+    if (n <= 1) {
+        return n;
+    }
+    std::vector<int> dp(n + 1);
+    dp[0] = 0;
+    dp[1] = 1;
+    for (int i = 2; i <= n; ++i) {
+        dp[i] = dp[i - 1] + dp[i - 2];
+    }
+    return dp[n];
+}
 
-  int result = 0;
-  for( int i=2; i<n; i++ ) { 
-    result = (prev1+ prev2);
-    prev1 = result;
-    prev2 = prev1;
-  }
- 
-  return result;
-
-} 
-
-// To execute C++, please define "int main()"
+/**
+ * @brief Main function to demonstrate and compare Fibonacci implementations.
+ * @return 0 on successful execution.
+ */
 int main() {
+    int n = 10;
+    std::cout << "Calculating the " << n << "th Fibonacci number:" << std::endl;
 
-//0 ,1, 1, 2
+    std::cout << "1. Simple Recursive:    " << fibonacciRecursive(n) << std::endl;
+    std::cout << "2. Top-Down DP (Memo):  " << fibonacciTopDown(n) << std::endl;
+    std::cout << "3. Bottom-Up DP (Tab):  " << fibonacciBottomUp(n) << std::endl;
 
-  cout << endl << " top down dynamic programming  : Nth fibonacii number" <<endl;
-  int n = 4;
-
-  vector<int> v(n,-1);
-
-  cout << n_fibonacii_dynamic_bottomup(n,0,1);
-  cout << n_fibonacii_dynamic_topdown(n-1);
-  cout << n_fibonacii_dynamic_topdown_withmemory(n-1,v);
-  return 1;
- 
+    return 0;
 }

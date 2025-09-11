@@ -1,70 +1,109 @@
-#include <iostream>
-#include <vector>
-#include <array>
-#include <map>
-
-using namespace std;
-
-// path with given sequence
-
 /*
+    Path With Given Sequence
 
-Sequence: [1, 9, 9]  Output: true Explaination: The tree has a path 1 -> 9 -> 9. 
+    Problem Statement:
+    Given a binary tree and a sequence, find if the sequence is present as a
+    root-to-leaf path in the tree. A root-to-leaf path is a path starting from
+    the root and ending at any leaf node.
 
+    Example 1:
+    Sequence: [1, 9, 9]
+    Tree:
+        1
+       / \
+      7   9
+         / \
+        2   9
+    Output: true
+    Explanation: The tree has a path 1 -> 9 -> 9.
 
+    Example 2:
+    Sequence: [1, 0, 7]
+    (Same tree as above)
+    Output: false
+    Explanation: The tree does not have a root-to-leaf path 1 -> 0 -> 7.
 */
 
+#include <iostream>
+#include <vector>
 
-class Node {
-  public:
-
+// Definition for a binary tree node.
+struct Node {
     int val;
     Node* left;
     Node* right;
 
-    Node(int v, Node* l, Node* r) {
-      val = v;
-      left = l;
-      right = r;
-    }
-
+    Node(int x) : val(x), left(nullptr), right(nullptr) {}
 };
 
+/**
+ * @brief Recursively checks if a path matching the sequence exists.
+ *
+ * @param currentNode The current node in the traversal.
+ * @param sequence The sequence of values to find.
+ * @param sequenceIndex The current index in the sequence to match.
+ * @return True if a valid root-to-leaf path is found, false otherwise.
+ */
+bool findPathRecursive(Node* currentNode, const std::vector<int>& sequence, int sequenceIndex) {
+    if (!currentNode) {
+        return false;
+    }
 
-bool dfs(Node* root, vector<int>& s, int i) {
+    // Check if we are within the sequence bounds and if the node value matches
+    if (sequenceIndex >= sequence.size() || currentNode->val != sequence[sequenceIndex]) {
+        return false;
+    }
 
-  if(root == NULL)
-    return false;
+    // If it's a leaf node, check if we have also reached the end of the sequence
+    if (currentNode->left == nullptr && currentNode->right == nullptr && sequenceIndex == sequence.size() - 1) {
+        return true;
+    }
 
-  if(root->val != s[i]) {
-    return false;
-  }
-
-  if(root->left == NULL && root->right == NULL) {
-    return true;
-  }
-  
-
-  return dfs(root->left,s,i+1) || dfs(root->right, s, i+1);
-
-
+    // Recursively call for the left and right children with the next index
+    return findPathRecursive(currentNode->left, sequence, sequenceIndex + 1) ||
+           findPathRecursive(currentNode->right, sequence, sequenceIndex + 1);
 }
 
+/**
+ * @brief Finds if a given sequence exists as a root-to-leaf path in the binary tree.
+ *
+ * This function serves as a wrapper to start the recursive DFS process from the root
+ * of the tree and the beginning of the sequence.
+ *
+ * @param root A pointer to the root of the binary tree.
+ * @param sequence A constant reference to the vector of integers representing the sequence.
+ * @return True if the path exists, false otherwise.
+ */
+bool findPath(Node* root, const std::vector<int>& sequence) {
+    if (!root) {
+        return sequence.empty();
+    }
+    return findPathRecursive(root, sequence, 0);
+}
+
+/**
+ * @brief Main function to test the findPath function.
+ * @return 0 on successful execution.
+ */
 int main() {
+    Node* root = new Node(1);
+    root->left = new Node(7);
+    root->right = new Node(9);
+    root->right->left = new Node(2);
+    root->right->right = new Node(9);
 
-  vector<int> sequence {1,9,9};
+    std::vector<int> sequence1 = {1, 9, 9};
+    std::cout << "Path [1, 9, 9] exists? " << (findPath(root, sequence1) ? "true" : "false") << std::endl; // Expected: true
 
-  
-    Node* node3 = new Node(2,NULL,NULL);
-    Node* node2 = new Node(9,NULL,NULL);
-    Node* node1 = new Node(9,node3,node2);
+    std::vector<int> sequence2 = {1, 7};
+    std::cout << "Path [1, 7] exists? " << (findPath(root, sequence2) ? "true" : "false") << std::endl; // Expected: true
 
-    Node* node7 = new Node(7,NULL,NULL);
-    Node* root = new Node(1,node7,node1);
+    std::vector<int> sequence3 = {1, 9, 5};
+    std::cout << "Path [1, 9, 5] exists? " << (findPath(root, sequence3) ? "true" : "false") << std::endl; // Expected: false
 
-    //Node* root = node1;
+    std::vector<int> sequence4 = {1, 9}; // Not a root-to-leaf path
+    std::cout << "Path [1, 9] exists? " << (findPath(root, sequence4) ? "true" : "false") << std::endl; // Expected: false
 
-    cout << " path is : " << dfs(root,sequence,0);
-
-
+    // Note: In a real application, you would need to deallocate the tree nodes.
+    return 0;
 }
