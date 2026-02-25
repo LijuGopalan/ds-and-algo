@@ -1,106 +1,96 @@
 #include <iostream>
-#include <vector>
 #include <queue>
-#include
+#include <vector>
 
 using namespace std;
 
 class slidemedian {
 
-
-    int k;
-    vector<int> nums;
-    priority_queue<int> maxheap;
-    priority_queue<int, vector<int>, greater<int>> minheap;
+  int k;
+  vector<int> nums;
+  priority_queue<int> maxheap;
+  priority_queue<int, vector<int>, greater<int>> minheap;
 
 public:
+  void insert(int number) {
 
-    void insert(int number) {
-        
-        if(maxheap.empty() || maxheap.top() >= number) 
-        maxheap.push(number);
-        else 
-        minheap.push(number);
+    if (maxheap.empty() || maxheap.top() >= number)
+      maxheap.push(number);
+    else
+      minheap.push(number);
 
-        if(maxheap.size() > minheap.size()+1) {
-        minheap.push(maxheap.top());
-        maxheap.pop();
-        } else if(minheap.size() > maxheap.size()) {
-        maxheap.push(minheap.top());
-        minheap.pop();
-        }
-
+    if (maxheap.size() > minheap.size() + 1) {
+      minheap.push(maxheap.top());
+      maxheap.pop();
+    } else if (minheap.size() > maxheap.size()) {
+      maxheap.push(minheap.top());
+      minheap.pop();
     }
- 
-    void remove(int number) {
+  }
 
-        if(number <= maxheap.top()) {
-           maxheap.remove(number); 
-        } else if(number > maxheap.top()) {
-            minheap.remove(number);
-        }
- 
+  void remove(int number) {
+
+    if (number <= maxheap.top()) {
+
+      // need to fix the erase problem
+      maxheap.erase(maxheap.find(number));
     }
 
+    else if (number > maxheap.top()) {
 
-    float getmedian() {
-
-        if(maxheap.size() == minheap.size())  
-        return (float)(maxheap.top()+minheap.top())/2;
-      else
-       return (float)maxheap.top(); 
+      // need to fix the remove problem
+      minheap.remove(number);
     }
+  }
 
-    vector<double> slidingmedian(int k, vector<int>& nums) {
-        
-        this->k = k;
-        this->nums = nums;
-        vector<double> result;
+  float getmedian() {
 
-        //sliding window
-        int begin = 0;
-        int end = 0;
+    if (maxheap.size() == minheap.size())
+      return (float)(maxheap.top() + minheap.top()) / 2;
+    else
+      return (float)maxheap.top();
+  }
 
-        int count = 0;
-        while (end < nums.size()) {
+  vector<double> slidingmedian(int k, vector<int> &nums) {
 
-            while(count < k) {
-                insert(nums[end]);
-                end++;
-                count++;
-            }
+    this->k = k;
+    this->nums = nums;
+    vector<double> result;
 
-            result.push_back(getmedian());
+    // sliding window
+    int begin = 0;
+    int end = 0;
 
-            //remove the first element of the window
-            remove(nums[begin]);
+    int count = 0;
+    while (end < nums.size()) {
 
-             
+      while (count < k) {
+        insert(nums[end]);
+        end++;
+        count++;
+      }
 
-            begin++;
-            count--; 
-            
-        }
-        
-        
+      result.push_back(getmedian());
 
+      // remove the first element of the window
+      remove(nums[begin]);
 
+      begin++;
+      count--;
     }
-
+  }
 };
-
 
 int main() {
 
-    slidemedian sm;
-    vector<int> nums = {1, 3, 5, 7, 9}; 
-    int k = 3;
+  slidemedian sm;
+  vector<int> nums = {1, 3, 5, 7, 9};
+  int k = 3;
 
-    vector<double> result = sm.slidingmedian(k, nums);
-    for (double median : result) {
-        cout << median << " ";
-    }   
+  vector<double> result = sm.slidingmedian(k, nums);
+  for (double median : result) {
+    cout << median << " ";
+  }
 
-
-    return 1;
+  return 1;
 }
