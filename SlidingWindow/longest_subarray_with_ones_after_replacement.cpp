@@ -21,7 +21,6 @@
 using namespace std;
 
 int get_max_length_subarray_with_1(vector<int>& v, int& k) {
-
   
     int result = 0;
     int temp = k;

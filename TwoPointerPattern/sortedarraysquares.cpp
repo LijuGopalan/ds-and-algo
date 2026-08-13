@@ -23,6 +23,11 @@ void printarray(vector<int>& arr) {
         cout << arr[i] << " ";
     }
     cout << endl;
+
+    //another way to print the array
+    for( auto i : arr) {
+        cout << i << " ";
+    }
 }
 
 int main() {

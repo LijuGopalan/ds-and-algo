@@ -2,13 +2,13 @@
 
 A peak element is an element that is strictly greater than its neighbors.
 
-Given a 0-indexed integer array nums, find a peak element, and return its index. If the array contains multiple peaks, return the index to any of the peaks.
+Given a 0-indexed integer array nums, find a peak element, and return its index. 
+If the array contains multiple peaks, return the index to any of the peaks.
 
-You may imagine that nums[-1] = nums[n] = -∞. In other words, an element is always considered to be strictly greater than a neighbor that is outside the array.
+You may imagine that nums[-1] = nums[n] = -∞. In other words, an element is always considered to be strictly 
+greater than a neighbor that is outside the array.
 
 You must write an algorithm that runs in O(log n) time.
-
- 
 
 Example 1:
 
@@ -30,9 +30,12 @@ We have to solve this question with O(logn) time. Let's solve this question with
 
 > Calculate middle index.
 
-In the next step, we have to move a left or a right pointer. The description says "an element is always considered to be strictly greater than a neighbor that is outside the array."
+In the next step, we have to move a left or a right pointer. 
+The description says "an element is always considered to be strictly greater than a neighbor that is outside the array."
 
-In other words, if a number at middle + 1 index is less than a number at middle index, we have one of peaks on the left side of middle index, so move the right pointer to middle. Middle pointer itself may be one of peaks.
+In other words, if a number at middle + 1 index is less than a number at middle index, 
+we have one of peaks on the left side of middle index, 
+so move the right pointer to middle. Middle pointer itself may be one of peaks.
 
 On the other hand, middle + 1 is greater than middle, we should move left pointer to middle + 1.
 

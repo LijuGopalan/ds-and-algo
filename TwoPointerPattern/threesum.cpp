@@ -16,15 +16,33 @@ Input: [-5, 2, -1, -2, 3]
 Output: [[-5, 2, 3], [-2, -1, 3]]
 Explanation: There are two unique triplets whose sum is equal to zero.
 
+**Approach:**
+1. Sort the array.
+2. Fix element `X` at index `i`, then find two numbers `Y` and `Z` in the rest of the array such that `Y + Z == -X` (reducing to a two-pointer pair sum).
+3. Skip duplicate values of `X`, `Y`, and `Z` to ensure uniqueness.
+
+```
+Input : [-3, 0, 1, 2, -1, 1, -2]
+Output: [-3, 1, 2], [-2, 0, 2], [-2, 1, 1], [-1, 0, 1]
+```
+
+| Complexity | Value |
+|---|---|
+| Time  | O(N²) |
+| Space | O(N) — for sorting |
+
 
 
 */
 
 /* Logic 
 
-This problem follows the Two Pointers pattern and shares similarities with Pair with Target Sum. A couple of differences are that the input array is not sorted and instead of a pair we need to find triplets with a target sum of zero.
+This problem follows the Two Pointers pattern and shares similarities with Pair with Target Sum. 
+A couple of differences are that the input array is not sorted and instead of a pair we need to find triplets with a target sum 
+of zero.
 
-To follow a similar approach, first, we will sort the array and then iterate through it taking one number at a time. Let’s say during our iteration we are at number ‘X’, so we need to find ‘Y’ and ‘Z’ such that 
+To follow a similar approach, first, we will sort the array and then iterate through it taking one number at a time. 
+Let’s say during our iteration we are at number ‘X’, so we need to find ‘Y’ and ‘Z’ such that 
 X+Y+Z==0
 X+Y+Z==0. At this stage, our problem translates into finding a pair whose sum is equal to “−X” (as from the above equation 
 Y+Z==−X
@@ -53,21 +71,27 @@ void printtriplets(vector<array<int, 3>>& triplets) {
 
 void twosum(vector<int>& arr, int target, int left, int right, vector<array<int, 3>>& triplets) {
     while(left < right) {
+
+        // Skip left duplicate numbers
+        if((left+1) < n && arr[left+1] == arr[left]) { 
+            left++;
+            continue;
+        }
+
+        // Skip right duplicate numbers
+        if((right-1) >= 0 && arr[right-1] == arr[right]) { 
+            right--;
+            continue;
+        }
+
         int sum = arr[left] + arr[right];
      
         if(sum == target) {
 
-         
             triplets.push_back({-target, arr[left], arr[right]});
             left++;
             right--;
-            // Skip duplicates
-            while(left < right && arr[left] == arr[left-1]) {
-                left++;
-            }
-            while(left < right && arr[right] == arr[right+1]) {
-                right--;
-            }
+
         } else if(sum < target) {
             left++;
         } else {
@@ -92,6 +116,7 @@ int main() {
     cout << endl;
     
     int n = arr.size();
+
     // Iterate through the array
     for(int i=0;i<n;i++) {
 

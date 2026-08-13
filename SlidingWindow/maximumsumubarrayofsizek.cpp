@@ -25,7 +25,6 @@
 #include <vector>
 using namespace std;
 
-
 // Function to find the maximum sum of a subarray of size k
 // using the sliding window technique   
 // Time Complexity: O(n)

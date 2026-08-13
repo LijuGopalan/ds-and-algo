@@ -65,8 +65,8 @@ using namespace std;
 
 int findDuplicate(vector<int>& nums) {
 
-    int low = 0;
-    int high = nums.size()-1;
+    int low = 1;               // value range starts at 1, not index 0
+    int high = nums.size()-1;  // nums.size()-1 == n, the max possible value
 
     while(low < high ) {
 

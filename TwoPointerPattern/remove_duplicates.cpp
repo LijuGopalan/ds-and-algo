@@ -17,6 +17,24 @@ Input: [2, 2, 2, 11]
 Output: 2
 Explanation: The first two elements after removing the duplicates will be [2, 11].
 
+**Approach:** Slow & fast pointer variant.
+- `i` (slow) tracks the position of the next unique element.
+- `end` (fast) scans through the array.
+- Whenever `arr[end] != arr[end-1]`, copy it forward to position `i`.
+
+```
+Input : [2, 3, 3, 3, 6, 9, 9]
+Output: 4  →  [2, 3, 6, 9, ...]
+```
+
+| Complexity | Value |
+|---|---|
+| Time  | O(N) |
+| Space | O(1) |
+
+---
+
+
 */
 
 #include <iostream>
@@ -38,16 +56,20 @@ int remove_duplicates(vector<int>& v) {
     int size = v.size();
     if(size == 0) return 0;
 
-    int i =  1;
-    int end = 1;
-    for(;end<size;end++) {
-        if(v[end] != v[end-1]) {
-            v[i] = v[end];
-            i++;
-        }
-    }
+    int slow =  0;
+    int fast = 0;
 
-    return i;
+    for(;fast<size;fast++) {
+
+        if(v[slow] == v[fast]) {
+            continue;
+        } else {
+            slow++;
+            v[slow] = v[fast];
+        }
+        
+    }
+    return fast + 1;
 }
 
 int main() {
