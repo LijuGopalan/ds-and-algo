@@ -1,8 +1,10 @@
 # Ignore everything
 *
 
-# Do not ignore .cpp files
+# Do not ignore .cpp and .md files
 !*.cpp
+!*.md
+
 
 # Optionally, you may also want to include directories
 # to ensure they are not ignored.
